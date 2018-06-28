@@ -22,4 +22,4 @@
 | Website                       | http://daringfireball.net/projects/markdown  |
 
 # Реальный пример
-[TypeScript/README.md at master · Microsoft/TypeScript] (https://github.com/Microsoft/TypeScript/blob/master/README.md)
+[TypeScript/README.md at master · Microsoft/TypeScript](https://github.com/Microsoft/TypeScript/blob/master/README.md)
