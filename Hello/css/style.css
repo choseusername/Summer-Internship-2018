@@ -146,6 +146,12 @@ body {
 	display: block;
 }
 
+@media (max-width:1180px) {
+	.hr-line-scroll {
+		max-width: 540px;
+	}
+}
+
 .hr-line-scroll .button-top {
 	display: block;
 	height: 1px;
