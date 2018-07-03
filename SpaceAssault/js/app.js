@@ -356,13 +356,22 @@ var MegalithType = Object.freeze({
 })
 
 function createMegalith(type) {
-    var megalith = null;
+    var megalithSprite = null;
     if (type === MegalithType.type1) {
-        megalith = new Sprite('img/sprites.png', [0, 200], [60, 65], 0, [0]);
+        megalithSprite = new Sprite('img/sprites.png', [0, 200], [60, 65], 0, [0]);
     } else if (type === MegalithType.type2) {
-        megalith = new Sprite('img/sprites.png', [0, 270], [50, 50], 0, [0]);
+        megalithSprite = new Sprite('img/sprites.png', [0, 270], [50, 50], 0, [0]);
     }
-    return megalith;
+    
+    var position = [
+        Math.max(Math.random() * canvas.width - megalithSprite.size[0], 0.0),
+        Math.max(Math.random() * canvas.height - megalithSprite.size[1], 0.0)
+    ];
+
+    return ({
+        pos: position,
+        sprite: megalithSprite
+    });
 }
 
 function createMegaliths(count) {
@@ -371,14 +380,7 @@ function createMegaliths(count) {
         var keys = Object.keys(MegalithType);
         var megalithType = MegalithType[keys[Math.floor(keys.length * Math.random())]];
         var megalith = createMegalith(megalithType);
-        var position = [
-            Math.max(Math.random() * canvas.width - megalith.size[0], 0.0),
-            Math.max(Math.random() * canvas.height - megalith.size[1], 0.0)
-        ];
-        megaliths.push({
-            pos: position,
-            sprite: megalith
-        });
+        megaliths.push(megalith);
     }
     return megaliths;
 }
