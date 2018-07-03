@@ -52,7 +52,6 @@ resources.onReady(init);
 
 // Game state
 var player = {
-    goodmode: false,
     pos: [0, 0],
     sprite: new Sprite('img/sprites.png', [0, 0], [39, 39], 16, [0, 1])
 };
@@ -68,7 +67,6 @@ var terrainPattern;
 
 var score = 0;
 var scoreEl = document.getElementById('score');
-var goodmodeStatusEl = document.getElementById('goodmode-status');
 
 // Speed in pixels per second
 var playerSpeed = 200;
@@ -96,16 +94,9 @@ function update(dt) {
     checkCollisions();
 
     scoreEl.innerHTML = score;
-    
-    goodmodeStatusEl.innerHTML = (player.goodmode === true) ? "Good Mode Enable" : "Good Mode Disable";
 };
 
 function handleInput(dt) {
-    // Good Mode key handle
-    if (input.isDown('q')) {
-        player.goodmode = !player.goodmode;
-    }
-
     if(input.isDown('DOWN') || input.isDown('s')) {
         player.pos[1] += playerSpeed * dt;
     }
@@ -241,10 +232,8 @@ function checkCollisions() {
             }
         }
 
-        if (player.goodmode === false) {
-            if(boxCollides(pos, size, player.pos, player.sprite.size)) {
-                gameOver();
-            }
+        if(boxCollides(pos, size, player.pos, player.sprite.size)) {
+            gameOver();
         }
     }
 }
