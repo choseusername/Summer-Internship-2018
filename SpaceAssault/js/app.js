@@ -60,6 +60,7 @@ var bullets = [];
 var enemies = [];
 var explosions = [];
 var megaliths = [];
+var heavenlyManna = [];
 
 var lastFire = Date.now();
 var gameTime = 0;
@@ -69,10 +70,26 @@ var terrainPattern;
 var score = 0;
 var scoreEl = document.getElementById('score');
 
+var mannaScore = 0;
+var mannaEl = document.getElementById('manna-score');
+
 // Speed in pixels per second
 var playerSpeed = 200;
 var bulletSpeed = 500;
 var enemySpeed = 100;
+
+// Drop Heavenly Manna interval
+var mannaDropInterval = 1;
+var lastMannaDropTime = 0;
+
+function dropManna() {
+    if (heavenlyManna.length < 10) {
+        if ((gameTime - lastMannaDropTime) > mannaDropInterval) {
+            heavenlyManna.push(createManna());
+            lastMannaDropTime = gameTime;
+        }
+    }
+}
 
 // Update game objects
 function update(dt) {
@@ -95,8 +112,10 @@ function update(dt) {
     }
 
     checkCollisions();
+    dropManna();
 
     scoreEl.innerHTML = score;
+    mannaEl.innerHTML = mannaScore;
 };
 
 function handleInput(dt) {
@@ -197,6 +216,11 @@ function updateEntities(dt) {
             i--;
         }
     }
+
+    // Update Heavenly Manna
+    heavenlyManna.forEach(function(manna) {
+        manna.sprite.update(dt);
+    });
 }
 
 // Collisions
@@ -252,7 +276,20 @@ function circumambulateMegaliths() {
     });
 }
 
+function checkHeavenlyMannaCollisions() {
+    heavenlyManna.some(function(manna, index, heavenlyManna) {
+        if (boxCollides(manna.pos, manna.sprite.size, player.pos, player.sprite.size)) {
+            heavenlyManna.splice(index, 1);
+            mannaScore++;
+            return true;
+        }
+        return false;
+    });
+}
+
 function checkCollisions() {
+    checkHeavenlyMannaCollisions();
+
     checkPlayerBounds();
 
     circumambulateMegaliths();
@@ -327,6 +364,7 @@ function render() {
     renderEntities(enemies);
     renderEntities(explosions);
     renderEntities(megaliths);
+    renderEntities(heavenlyManna);
 };
 
 function renderEntities(list) {
@@ -385,6 +423,18 @@ function createMegaliths(count) {
     return megaliths;
 }
 
+function createManna() {
+    var mannaSprite = new Sprite('img/sprites.png', [0, 155], [55, 55], 4, [0, 1, 2, 3]);
+    var position = [
+        Math.max(Math.random() * canvas.width - mannaSprite.size[0], 0.0),
+        Math.max(Math.random() * canvas.height - mannaSprite.size[1], 0.0)
+    ];
+    return ({
+        pos: position,
+        sprite: mannaSprite
+    });
+}
+
 // Reset game to original state
 function reset() {
     document.getElementById('game-over').style.display = 'none';
@@ -392,9 +442,11 @@ function reset() {
     isGameOver = false;
     gameTime = 0;
     score = 0;
+    mannaScore = 0
 
     enemies = [];
     bullets = [];
+    heavenlyManna = [];
 
     // create megaliths / first level
     megaliths = createMegaliths(3);
